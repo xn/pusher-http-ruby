@@ -5,7 +5,7 @@ module Pusher
   class Request
     attr_reader :body, :query
 
-    def initialize(resource, event_name, data, socket_id, token = nil)
+    def initialize(resource, event_name, data, socket_id, token)
       params = {
         :name => event_name,
       }
@@ -25,7 +25,7 @@ module Pusher
       params[:body_md5] = Digest::MD5.hexdigest(body)
 
       request = Signature::Request.new('POST', resource.path, params)
-      auth_hash = request.sign(token || Pusher.authentication_token)
+      auth_hash = request.sign(token)
 
       @query = params.merge(auth_hash)
     end

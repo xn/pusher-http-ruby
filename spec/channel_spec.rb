@@ -113,14 +113,14 @@ describe Pusher::Channel do
       @http.should_receive(:post).and_raise("Fail")
       Pusher.logger.should_receive(:error).with("Fail (RuntimeError)")
       Pusher.logger.should_receive(:debug) #backtrace
-      Pusher::Channel.new(Pusher.url, 'test_channel').trigger('new_event', 'Some data')
+      Pusher::Channel.new(Pusher.default_app, 'test_channel').trigger('new_event', 'Some data')
     end
 
     it "should log failure if exception raised" do
       @http.should_receive(:post).and_raise("Fail")
       Pusher.logger.should_receive(:error).with("Fail (RuntimeError)")
       Pusher.logger.should_receive(:debug) #backtrace
-      Pusher::Channel.new(Pusher.url, 'test_channel').trigger('new_event', 'Some data')
+      Pusher::Channel.new(Pusher.default_app, 'test_channel').trigger('new_event', 'Some data')
     end
   end
 

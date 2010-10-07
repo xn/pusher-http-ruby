@@ -85,5 +85,37 @@ describe Pusher do
         end
       end
     end
+    
+    describe 'instance app' do
+      before do
+        @app = Pusher.app(
+          :app_id => '321',
+          :key => '0987654321',
+          :secret => '123'
+        )
+      end
+      
+      it 'should have its own configuration' do
+        @app.app_id.should == '321'
+        @app.key.should  == '0987654321'
+        @app.secret.should == '123'
+      end
+      
+      it 'should keep default configuration' do
+        Pusher.app_id.should == '20'
+        Pusher.key.should == '12345678900000001'
+        Pusher.secret.should == '12345678900000001'
+      end
+      
+      describe 'with no host or port specidied' do
+        
+        it 'should use defaults' do
+          @app.host.should == Pusher.host
+          @app.port.should == Pusher.port
+        end
+        
+      end
+      
+    end
   end
 end
