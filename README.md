@@ -59,12 +59,26 @@ You need to be running eventmachine to make use of this functionality. This is a
 Private channels
 ----------------
 
-The Pusher Gem also deals with signing requests for authenticated private channels. A quick Rails controller example:
+The Pusher gem also deals with signing requests for authenticated private channels. A quick Rails controller example:
 
     reponse = Pusher['private-my_channel'].authenticate(params[:socket_id])
     render :json => response
-    
+
 Read more about private channels in [the docs](http://pusher.com/docs/client_api_guide/client_channels#subscribe-private-channels) and under {Pusher::Channel#authenticate}.
+
+Web hooks
+---------
+
+The Pusher gem has methods for authenticating and decoding web hooks received by your application.
+
+1. Log in to http://app.pusherapp.com/
+2. Create a web hook for http://myapp.com/receive_web_hook to be called when a channel is occupied.
+
+    def receive_web_hook()
+        if Pusher::Hooker.authentic?(request)
+            web_hook_data_hash = Pusher::Hooker.extract_data(request)
+        end
+    end
 
 Developing
 ----------
