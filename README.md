@@ -69,15 +69,18 @@ Read more about private channels in [the docs](http://pusher.com/docs/client_api
 Web hooks
 ---------
 
-The Pusher gem has methods for authenticating and decoding web hooks received by your application.
+The Pusher gem has methods for authenticating and decoding web hooks received by your application.  To change your web hook settings, log into your account at http://app.pusherapp.com/
 
-1. Log in to http://app.pusherapp.com/
-2. Create a web hook for http://myapp.com/receive_web_hook to be called when a channel is occupied.
+Then, authenticate thus:
 
-    def receive_web_hook()
-        if Pusher::Hooker.authentic?(request)
-            web_hook_data_hash = Pusher::Hooker.extract_data(request)
-        end
+    def receive_web_hook_action()
+        valid = Pusher::Hooker.authentic?(request)
+    end
+
+Or, authenticate and decode the web hook thus:
+
+    def receive_web_hook_action()
+        web_hook_data_hash = Pusher::Hooker.extract_data(request)
     end
 
 Developing
