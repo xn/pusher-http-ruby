@@ -25,23 +25,21 @@ module Pusher
       http = @client.net_http_client
 
       begin
+        path = encode_query(@uri, @params)
         case @verb
         when :post
-          response = http.post(encode_query(@uri, @params), @body, {
-            'Content-Type'=> 'application/json'
-          })
+          post = Net::HTTP::Post.new(path)
+          post.body = @body
+          post['Content-Type'] = 'application/json'
+          response = http.request(@uri, post)
         when :get
-          response = http.get(encode_query(@uri, @params), {
-            'Content-Type'=> 'application/json'
-          })
+          get = Net::HTTP::Get.new(path)
+          get['Content-Type'] = 'application/json'
+          response = http.request(@uri, get)
         else
           raise "Unsuported verb"
         end
-      rescue Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED,
-             Errno::ETIMEDOUT, Errno::EHOSTUNREACH,
-             Timeout::Error, EOFError,
-             Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError,
-             Net::ProtocolError => e
+      rescue Net::HTTP::Persistent::Error => e
         error = Pusher::HTTPError.new("#{e.message} (#{e.class})")
         error.original_error = e
         raise error

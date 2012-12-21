@@ -52,7 +52,7 @@ module Pusher
 
     def http_proxy=(http_proxy)
       @http_proxy = http_proxy
-      uri = URI.parse(http_proxy)
+      uri = @proxy_uri = URI.parse(http_proxy)
       @proxy = {
         :scheme => uri.scheme,
         :host => uri.host,
@@ -225,26 +225,10 @@ module Pusher
 
     # @private Construct a net/http http client
     def net_http_client
-      begin
-        if encrypted?
-          require 'net/https' unless defined?(Net::HTTPS)
-        else
-          require 'net/http' unless defined?(Net::HTTP)
-        end
-
-        http_klass = if (p = @proxy)
-          Net::HTTP.Proxy(p[:host], p[:port], p[:user], p[:password])
-        else
-          Net::HTTP
-        end
-
-        http = http_klass.new(@host, @port)
-
-        if encrypted?
-          http.use_ssl = true
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        end
-
+      @_net_http_persistent ||= begin
+        require 'net/http/persistent'
+        http = Net::HTTP::Persistent.new 'pusher-gem'
+        http.proxy = @proxy_uri if @proxy_uri
         http
       end
     end

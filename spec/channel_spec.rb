@@ -36,7 +36,7 @@ describe Pusher::Channel do
     it "should log failure if error raised in Net::HTTP call" do
       stub_post_to_raise(Net::HTTPBadResponse)
 
-      Pusher.logger.should_receive(:error).with("Exception from WebMock (Net::HTTPBadResponse) (Pusher::HTTPError)")
+      Pusher.logger.should_receive(:error).with(/Pusher::HTTPError/)
       Pusher.logger.should_receive(:debug) #backtrace
       channel = Pusher::Channel.new(@client.url, 'test_channel', @client)
       channel.trigger('new_event', 'Some data')

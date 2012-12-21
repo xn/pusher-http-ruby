@@ -326,8 +326,8 @@ describe Pusher do
 
             error.class.should == Pusher::HTTPError
             error.should be_kind_of(Pusher::Error)
-            error.message.should == 'Exception from WebMock (Timeout::Error)'
-            error.original_error.class.should == Timeout::Error
+            error.message.should =~ /Timeout::Error/
+            error.original_error.class.should == Net::HTTP::Persistent::Error
           end
 
           it "should raise Pusher::Error if call returns 400" do
